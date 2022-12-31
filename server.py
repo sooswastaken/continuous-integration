@@ -4,31 +4,39 @@ import sys
 import time
 import asyncio
 import subprocess
+from hmac import HMAC, compare_digest
+from hashlib import sha1
 
 
 app = Sanic(__name__)
 
+
 @app.route("/")
 async def test(_):
-    return response.html(open('index.html').read())
-
-@app.route("/restart")
-async def restart(_):
-    asyncio.create_task(quit())
-    return response.html("Restarting...")
+    return response.html(open("index.html").read())
 
 
 async def quit():
     app.stop()
-    subprocess.Popen(['sh', './start.sh'])
+    subprocess.Popen(["sh", "./start.sh"])
     sys.exit(0)
 
-@app.post('/listen')
-async def listen(request):
-    """Listen for GitHub events"""
-    print(request.json)
-    return response.json({}, headers={'Content-Type': 'application/json'})
 
+def verify_signature(req):
+    received_sign = req.headers.get("X-Hub-Signature").split("sha1=")[-1].strip()
+    secret = "my_secret_string".encode()
+    expected_sign = HMAC(key=secret, msg=req.data, digestmod=sha1).hexdigest()
+    return compare_digest(received_sign, expected_sign)
+
+
+@app.route("/listen", methods=["POST"])
+def webhook(request):
+    if verify_signature(request):
+        # check if repo is correct
+        if request.json.get("repository").get("full_name") == "sooswastaken/continuous-integration":
+            asyncio.create_task(quit())
+            return response.text("Restarting...", status=200)
+    return response.text("Forbidden", status=403)
 
 
 if __name__ == "__main__":
