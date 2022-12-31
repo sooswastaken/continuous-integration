@@ -17,15 +17,18 @@ async def test(_):
 
 
 async def quit():
-    app.stop()
-    subprocess.Popen(["sh", "./start.sh"])
-    sys.exit(0)
+    try:
+        app.stop()
+        subprocess.Popen(["sh", "./start.sh"])
+        sys.exit(0)
+    except Exception as e:
+        print(e)c
 
 
 def verify_signature(req):
     received_sign = req.headers.get("X-Hub-Signature").split("sha1=")[-1].strip()
     secret = "ABCD123".encode()
-    expected_sign = HMAC(key=secret, msg=req.data, digestmod=sha1).hexdigest()
+    expected_sign = HMAC(key=secret, msg=req.body, digestmod=sha1).hexdigest()
     return compare_digest(received_sign, expected_sign)
 
 
