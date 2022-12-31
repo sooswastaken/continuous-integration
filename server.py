@@ -23,7 +23,7 @@ async def quit():
     subprocess.Popen(['sh', './start.sh'])
     sys.exit(0)
 
-@app.post('/listen', version=1)
+@app.post('/listen')
 async def listen(request):
     """Listen for GitHub events"""
     print(request.json)
