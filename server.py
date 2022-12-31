@@ -3,23 +3,31 @@ import os
 import sys
 import time
 import asyncio
+import subprocess
+
 
 app = Sanic(__name__)
 
 @app.route("/")
-async def test(request):
+async def test(_):
     return response.html(open('index.html').read())
 
 @app.route("/restart")
-async def restart(request):
+async def restart(_):
     asyncio.create_task(quit())
     return response.html("Restarting...")
 
 
 async def quit():
     app.stop()
-    os.system("sh start.sh")
+    subprocess.Popen(['sh', './start.sh'])
     sys.exit(0)
+
+@app.post('/listen', version=1)
+async def listen(request):
+    """Listen for GitHub events"""
+    print(request.json)
+    return response.json({}, headers={'Content-Type': 'application/json'})
 
 
 
