@@ -18,7 +18,6 @@ async def test(_):
 
 async def quit():
     try:
-        app.stop()
         subprocess.Popen(["sh", "./start.sh"])
         sys.exit(0)
     except Exception as e:
@@ -40,6 +39,10 @@ def webhook(request):
             request.json.get("repository").get("full_name")
             == "sooswastaken/continuous-integration"
         ):
+            app.stop()
+            # create asyncio loop to restart the server
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
             asyncio.create_task(quit())
             return response.text("Restarting...", status=200)
     return response.text("Forbidden", status=403)
