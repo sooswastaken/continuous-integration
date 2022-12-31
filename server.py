@@ -22,7 +22,7 @@ async def quit():
         subprocess.Popen(["sh", "./start.sh"])
         sys.exit(0)
     except Exception as e:
-        print(e)c
+        print(e)
 
 
 def verify_signature(req):
