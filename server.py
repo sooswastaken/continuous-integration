@@ -12,14 +12,13 @@ async def test(request):
 
 @app.route("/restart")
 async def restart(request):
-    # run start.sh, quit() then return response
-    os.system("sh start.sh")
     asyncio.create_task(quit())
     return response.html("Restarting...")
 
 
 async def quit():
     app.stop()
+    os.system("sh start.sh")
     sys.exit(0)
 
 
