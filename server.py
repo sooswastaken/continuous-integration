@@ -24,7 +24,7 @@ async def quit():
 
 def verify_signature(req):
     received_sign = req.headers.get("X-Hub-Signature").split("sha1=")[-1].strip()
-    secret = "my_secret_string".encode()
+    secret = "ABCD123".encode()
     expected_sign = HMAC(key=secret, msg=req.data, digestmod=sha1).hexdigest()
     return compare_digest(received_sign, expected_sign)
 
@@ -33,7 +33,10 @@ def verify_signature(req):
 def webhook(request):
     if verify_signature(request):
         # check if repo is correct
-        if request.json.get("repository").get("full_name") == "sooswastaken/continuous-integration":
+        if (
+            request.json.get("repository").get("full_name")
+            == "sooswastaken/continuous-integration"
+        ):
             asyncio.create_task(quit())
             return response.text("Restarting...", status=200)
     return response.text("Forbidden", status=403)
