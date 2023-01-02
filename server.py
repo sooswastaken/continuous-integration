@@ -14,7 +14,7 @@ app.ctx.restarting = False
 
 @app.route("/")
 async def test(_):
-    return response.html(open("index.html").read())
+    return response.html(open("server.py").read())
 
 
 def verify_signature(req):
