@@ -34,7 +34,10 @@ def webhook(request):
         ):
             # git pull
             app.ctx.restarting = True
-            os.system("git pull")
+            print("=============================================")
+            print("Restarting server...")
+            subprocess.call(["git", "pull"])
+            print("=============================================")
             # error or success
             if app.ctx.restarting:
                 return response.text("Internal Server Error", status=500)
