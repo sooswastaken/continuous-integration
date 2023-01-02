@@ -32,23 +32,6 @@ def webhook(request):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, auto_reload=True)
-# name: Lint and call API
 
-# on: [push]
 
-# jobs:
-#   lint:
-#     runs-on: ubuntu-latest
-#     steps:
-#       # ... steps to lint code with flake8
-
-#   call-api:
-#     runs-on: ubuntu-latest
-#     needs: [lint]
-#     steps:
-#       - name: Set API key
-#         run: echo "::set-env name=API_KEY::${{ secrets.API_KEY }}"
-#       - name: Call API
-#         run: |
-#           # Call your API here, using the API key stored in the API_KEY environment variable
-#           curl -X POST https://api.example.com/endpoint -H "Authorization: Bearer $API_KEY"
+# whats command to create requirements.txt
