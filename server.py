@@ -9,19 +9,12 @@ from hashlib import sha1
 
 
 app = Sanic(__name__)
+app.ctx.restarting = False
 
 
 @app.route("/")
 async def test(_):
     return response.html(open("index.html").read())
-
-
-async def quit():
-    try:
-        subprocess.Popen(["sh", "./start.sh"])
-        sys.exit(0)
-    except Exception as e:
-        print(e)
 
 
 def verify_signature(req):
@@ -39,14 +32,20 @@ def webhook(request):
             request.json.get("repository").get("full_name")
             == "sooswastaken/continuous-integration"
         ):
-            app.stop()
-            # create asyncio loop to restart the server
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            asyncio.create_task(quit())
-            return response.text("Restarting...", status=200)
+            # git pull
+            app.ctx.restarting = True
+            os.system("git pull")
+            # error or success
+            if app.ctx.restarting:
+                return response.text("Internal Server Error", status=500)
+            else:
+                return response.text("OK", status=200)
     return response.text("Forbidden", status=403)
 
 
+@app.listener("before_server_start")
+async def start_server(app, loop):
+    app.ctx.restarting = False
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=8000, auto_reload=True)
