@@ -43,9 +43,10 @@ def webhook(request):
     return response.text("Forbidden", status=403)
 
 
-@app.listener("before_server_start")
+@app.listener("after_server_start")
 async def start_server(app, loop):
     app.ctx.restarting = False
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, auto_reload=True)
