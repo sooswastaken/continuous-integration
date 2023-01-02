@@ -1,3 +1,4 @@
+import subprocess
 from sanic import Sanic, response
 # import os
 
@@ -23,7 +24,8 @@ def webhook(request):
     if not is_github_request(request):
         return response.text("Not Authorized", status=401)
 
-    print("Restarting!")
+    subprocess.call(["git", "pull"])
+    return response.text("Restarting")
 
     
 
