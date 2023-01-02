@@ -1,5 +1,5 @@
 from sanic import Sanic, response
-import os
+# import os
 
 app = Sanic(__name__)
 app.ctx.restarting = False
