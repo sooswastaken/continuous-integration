@@ -22,9 +22,8 @@ def webhook(request):
     # check if the request is from github, with the api key, the curl command is at the bottom of the file
     if not is_github_request(request):
         return response.text("Not Authorized", status=401)
-    
-    # run git pull, which automatically restarts the server
-    os.system("git pull")
+
+    print("Restarting!")
 
     
 
