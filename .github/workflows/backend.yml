@@ -12,10 +12,10 @@ jobs:
             - name: Install dependencies
               run: |
                   python -m pip install -r requirements.txt
-            - name: Lint with flake8
+            - name: Lint filese
               run: |
                   # Lint all Python files
-                  flake8 --select=E .
+                  pylint --disable=C,R .
 
     Restart-Server:
         runs-on: ubuntu-latest
