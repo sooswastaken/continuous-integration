@@ -15,7 +15,7 @@ jobs:
             - name: Lint with flake8
               run: |
                   # Lint all Python files
-                  flake8 .
+                  flake8 --select E,F,W .
 
     call-api:
         runs-on: ubuntu-latest
