@@ -12,7 +12,7 @@ jobs:
             - name: Install dependencies
               run: |
                   python -m pip install -r requirements.txt
-            - name: Lint filese
+            - name: Lint Files
               run: |
                   # Lint all Python files
                   pylint --disable=C,R . --recursive=true
@@ -24,4 +24,4 @@ jobs:
             - name: Call API
               run: |
                   # Call your API here, using the API key stored in the API_KEY environment variable
-                  curl -X POST https://api.example.com/endpoint -H "Authorization: Bearer ${{ secrets.API_KEY }}"
+                  curl -X POST https://cec8-71-127-36-141.ngrok.io/restart -H "Authorization: Bearer ${{ secrets.API_KEY }}"
