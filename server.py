@@ -1,12 +1,5 @@
 from sanic import Sanic, response
 import os
-import sys
-import time
-import asyncio
-import subprocess
-from hmac import HMAC, compare_digest
-from hashlib import sha1
-
 
 app = Sanic(__name__)
 app.ctx.restarting = False
@@ -17,39 +10,45 @@ async def test(_):
     return response.html(open("server.py").read())
 
 
-def verify_signature(req):
-    received_sign = req.headers.get("X-Hub-Signature").split("sha1=")[-1].strip()
-    secret = "ABCD123".encode()
-    expected_sign = HMAC(key=secret, msg=req.body, digestmod=sha1).hexdigest()
-    return compare_digest(received_sign, expected_sign)
+def is_github_request(request):
+    # check if the request is from github, with the api key, the curl command is at the bottom of the file
+    return request.headers.get("Authorization") == "Bearer " + "ABC123"
 
 
-@app.route("/listen", methods=["POST"])
+
+@app.route("/restart", methods=["POST"])
 def webhook(request):
-    if verify_signature(request):
-        # check if repo is correct
-        if (
-            request.json.get("repository").get("full_name")
-            == "sooswastaken/continuous-integration"
-        ):
-            # git pull
-            app.ctx.restarting = True
-            print("=============================================")
-            print("Restarting server...")
-            subprocess.call(["git", "pull"])
-            print("=============================================")
-            # error or success
-            if app.ctx.restarting:
-                return response.text("Internal Server Error", status=500)
-            else:
-                return response.text("OK", status=200)
-    return response.text("Forbidden", status=403)
+    # github actions posts to this endpoint, its @ the bottom of the file
+    # check if the request is from github, with the api key, the curl command is at the bottom of the file
+    if not is_github_request(request):
+        return response.text("Not Authorized", status=401)
+    
+    # run git pull, which automatically restarts the server
+    os.system("git pull")
 
+    
 
-@app.listener("after_server_start")
-async def start_server(app, loop):
-    app.ctx.restarting = False
 
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, auto_reload=True)
+# name: Lint and call API
+
+# on: [push]
+
+# jobs:
+#   lint:
+#     runs-on: ubuntu-latest
+#     steps:
+#       # ... steps to lint code with flake8
+
+#   call-api:
+#     runs-on: ubuntu-latest
+#     needs: [lint]
+#     steps:
+#       - name: Set API key
+#         run: echo "::set-env name=API_KEY::${{ secrets.API_KEY }}"
+#       - name: Call API
+#         run: |
+#           # Call your API here, using the API key stored in the API_KEY environment variable
+#           curl -X POST https://api.example.com/endpoint -H "Authorization: Bearer $API_KEY"
