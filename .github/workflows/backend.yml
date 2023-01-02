@@ -26,4 +26,4 @@ jobs:
             - name: Call API
               run: |
                   # Call your API here, using the API key stored in the API_KEY environment variable
-                  curl -X POST https://api.example.com/endpoint -H "Authorization: Bearer $API_KEY"
+                  curl -X POST https://api.example.com/endpoint -H "Authorization: Bearer ${{ secrets.API_KEY }}"
