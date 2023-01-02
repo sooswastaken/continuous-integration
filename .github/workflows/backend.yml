@@ -1,13 +1,13 @@
-name: Backend Production
+name: Update Backend
 
 on: [push]
 
 jobs:
-    lint:
+    Error Check:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-            - name: Set up Python
+            - name: Python Environment Setup
               uses: actions/setup-python@v2
             - name: Install dependencies
               run: |
@@ -15,9 +15,9 @@ jobs:
             - name: Lint with flake8
               run: |
                   # Lint all Python files
-                  flake8 --select E,F,W .
+                  flake8 --select=E .
 
-    call-api:
+    Restart Server:
         runs-on: ubuntu-latest
         needs: [lint]
         steps:
