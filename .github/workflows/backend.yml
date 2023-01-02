@@ -15,7 +15,7 @@ jobs:
             - name: Lint filese
               run: |
                   # Lint all Python files
-                  pylint --disable=C,R .
+                  pylint --disable=C,R . --recursive=true
 
     Restart-Server:
         runs-on: ubuntu-latest
