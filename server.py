@@ -7,7 +7,7 @@ app.ctx.restarting = False
 
 @app.route("/")
 async def test(_):
-    return response.html(open("server.py").read())
+    return response.html(open("index.html", encoding='utf-8').read())
 
 
 def is_github_request(request):
