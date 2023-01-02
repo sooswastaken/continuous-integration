@@ -3,7 +3,7 @@ name: Update Backend
 on: [push]
 
 jobs:
-    Error Check:
+    Error-Check:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
@@ -17,7 +17,7 @@ jobs:
                   # Lint all Python files
                   flake8 --select=E .
 
-    Restart Server:
+    Restart-Server:
         runs-on: ubuntu-latest
         needs: [lint]
         steps:
